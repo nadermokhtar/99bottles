@@ -15,28 +15,52 @@ class Bottles
     end
   end
 
-  def verse(number)
-    case number
-    when 0
-      "No more #{container(number)} of milk on the wall, " +
-        "no more #{container(number)} of milk.\n" +
-        'Go to the store and buy some more, ' +
-        "99 #{container(number - 1)} of milk on the wall.\n"
-    when 1
-      "#{number} #{container(number)} of milk on the wall, " +
-        "#{number} #{container(number)} of milk.\n" +
-        'Take it down and pass it around, ' +
-        "no more #{container(number - 1)} of milk on the wall.\n"
-    # when 2
-    #   "#{number} #{container(number)} of milk on the wall, " +
-    #     "#{number} #{container(number)} of milk.\n" +
-    #     'Take one down and pass it around, ' +
-    #     "#{number - 1} #{container(number - 1)} of milk on the wall.\n"
+  def quantity(number)
+    if number.zero?
+      'no more'
+    elsif number.negative?
+      '99'
     else
-      "#{number} #{container(number)} of milk on the wall, " +
-        "#{number} #{container(number)} of milk.\n" +
-        'Take one down and pass it around, ' +
-        "#{number - 1} #{container(number - 1)} of milk on the wall.\n"
+      number.to_s
+    end
+  end
+
+  def pronoun(number)
+    if number == 1
+      'it'
+    else
+      'one'
+    end
+  end
+
+  def action(number = :FIXEME)
+    if number.zero?
+      'Go to the store and buy some more, '
+    else
+      "Take #{pronoun(number)} down and pass it around, "
+    end
+  end
+
+  def verse(number)
+    "#{quantity(number).capitalize} #{container(number)} of milk on the wall, " +
+      "#{quantity(number)} #{container(number)} of milk.\n" +
+      action(number) +
+      "#{quantity(number - 1)} #{container(number - 1)} of milk on the wall.\n"
+  end
+end
+
+class BottleNumber
+  attr_reader :number
+
+  def initialize(number)
+    @number = number
+  end
+
+  def container(number)
+    if number == 1
+      'bottle'
+    else
+      'bottles'
     end
   end
 end

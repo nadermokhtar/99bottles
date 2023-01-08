@@ -7,45 +7,34 @@ class Bottles
     upper.downto(lower).map { |i| verse(i) }.join("\n")
   end
 
+  def verse(number)
+    bottle_number = BottleNumber.new(number)
+    next_bottle_number = BottleNumber.new(bottle_number.successor)
+
+    "#{bottle_number.quantity.capitalize} #{bottle_number.container} of milk on the wall, " +
+      "#{bottle_number.quantity} #{bottle_number.container} of milk.\n" +
+      bottle_number.action +
+      "#{next_bottle_number.quantity} #{next_bottle_number.container} of milk on the wall.\n"
+  end
+
   def container(number)
-    if number == 1
-      'bottle'
-    else
-      'bottles'
-    end
+    BottleNumber.new(number).container
   end
 
   def quantity(number)
-    if number.zero?
-      'no more'
-    elsif number.negative?
-      '99'
-    else
-      number.to_s
-    end
+    BottleNumber.new(number).quantity
   end
 
   def pronoun(number)
-    if number == 1
-      'it'
-    else
-      'one'
-    end
+    BottleNumber.new(number).pronoun
   end
 
-  def action(number = :FIXEME)
-    if number.zero?
-      'Go to the store and buy some more, '
-    else
-      "Take #{pronoun(number)} down and pass it around, "
-    end
+  def action(number)
+    BottleNumber.new(number).action
   end
 
-  def verse(number)
-    "#{quantity(number).capitalize} #{container(number)} of milk on the wall, " +
-      "#{quantity(number)} #{container(number)} of milk.\n" +
-      action(number) +
-      "#{quantity(number - 1)} #{container(number - 1)} of milk on the wall.\n"
+  def successor(number)
+    BottleNumber.new(number).successor
   end
 end
 
@@ -56,11 +45,45 @@ class BottleNumber
     @number = number
   end
 
-  def container(number)
+  def container
     if number == 1
       'bottle'
     else
       'bottles'
+    end
+  end
+
+  def quantity
+    if number.zero?
+      'no more'
+    elsif number.negative?
+      '99'
+    else
+      number.to_s
+    end
+  end
+
+  def pronoun
+    if number == 1
+      'it'
+    else
+      'one'
+    end
+  end
+
+  def action
+    if number.zero?
+      'Go to the store and buy some more, '
+    else
+      "Take #{pronoun} down and pass it around, "
+    end
+  end
+
+  def successor
+    if number == 0
+      99
+    else
+      number - 1
     end
   end
 end

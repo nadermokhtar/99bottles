@@ -8,13 +8,12 @@ class Bottles
   end
 
   def verse(number)
-    bottle_number = BottleNumber.new(number)
-    next_bottle_number = BottleNumber.new(bottle_number.successor)
+    bottle_number = BottleNumber.for(number)
 
-    "#{bottle_number.quantity.capitalize} #{bottle_number.container} of milk on the wall, " +
-      "#{bottle_number.quantity} #{bottle_number.container} of milk.\n" +
+    "#{bottle_number} of milk on the wall, ".capitalize +
+      "#{bottle_number} of milk.\n" +
       bottle_number.action +
-      "#{next_bottle_number.quantity} #{next_bottle_number.container} of milk on the wall.\n"
+      "#{bottle_number.successor} of milk on the wall.\n"
   end
 
   def container(number)
@@ -45,45 +44,73 @@ class BottleNumber
     @number = number
   end
 
+  def self.for(number)
+    begin
+      const_get("BottleNumber#{number}")
+    rescue NameError
+      BottleNumber
+    end.new(number)
+  end
+
+  def to_s
+    "#{quantity} #{container}"
+  end
+
   def container
-    if number == 1
-      'bottle'
-    else
-      'bottles'
-    end
+    'bottles'
   end
 
   def quantity
-    if number.zero?
-      'no more'
-    elsif number.negative?
-      '99'
-    else
-      number.to_s
-    end
+    number.to_s
   end
 
   def pronoun
-    if number == 1
-      'it'
-    else
-      'one'
-    end
+    'one'
   end
 
   def action
-    if number.zero?
-      'Go to the store and buy some more, '
-    else
-      "Take #{pronoun} down and pass it around, "
-    end
+    "Take #{pronoun} down and pass it around, "
   end
 
   def successor
-    if number == 0
-      99
-    else
-      number - 1
-    end
+    BottleNumber.for(number - 1)
+  end
+end
+
+class BottleNumber0 < BottleNumber
+  def quantity
+    'no more'
+  end
+
+  def successor
+    BottleNumber.for(99)
+  end
+
+  def action
+    'Go to the store and buy some more, '
+  end
+end
+
+class BottleNumber1 < BottleNumber
+  def container
+    'bottle'
+  end
+
+  def pronoun
+    'it'
+  end
+end
+
+class BottleNumber6 < BottleNumber
+  # def to_s
+  #   '1 six-pack'
+  # end
+
+  def quantity
+    '1'
+  end
+
+  def container
+    'six-pack'
   end
 end
